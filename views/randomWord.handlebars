@@ -1,0 +1,12 @@
+<h2>Random Words</h2>
+<p>{{ word.word }}</p>
+
+<form action="/word/knew" method="POST">
+    <input type="hidden" name="wordId" value="{{ word.id }}">
+    <button type="submit">I knew</button>
+</form>
+
+<form action="/word/didnt-know" method="POST">
+    <input type="hidden" name="wordId" value="{{ word.id }}">
+    <button type="submit">I didn't know</button>
+</form>
