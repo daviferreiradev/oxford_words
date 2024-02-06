@@ -18,11 +18,14 @@ app.use(
     })
 );
 
+// req
 app.use(express.json());
 
 app.use(express.static('public'));
 
 app.use("/", wordsRoutes);
+
+
 
 conn.sync().then(() => {
     app.listen(3000, () => {

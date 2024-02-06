@@ -5,9 +5,7 @@ const WordController = require('../controllers/WordController');
 
 router.get('/', WordController.getRandomWord);
 
-router.get('/daily-review', (req, res) => {
-    res.render('dailyReview');
-});
+router.get('/daily-review', WordController.getDailyReview);
 
 router.post('/word/knew', WordController.handleKnewWord);
 

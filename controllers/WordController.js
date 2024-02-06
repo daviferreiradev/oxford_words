@@ -66,11 +66,35 @@ class WordController {
 
             word.stage = 'new';
             await word.save();
-            res.redirect('/'); // Redirect to the page showing random words
+            res.redirect('/');
         } catch (error) {
             res.status(500).send('Error occurred: ' + error.message);
         }
     };
+
+    // Show all words that need to be reviewed today
+    static async getDailyReview(req, res) {
+        try {
+            const today = new Date();
+            const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+            const words = await Word.findAll({
+                where: {
+                    nextReviewDate: {
+                        [Sequelize.Op.gte]: startOfDay,
+                        [Sequelize.Op.lt]: endOfDay 
+                    }
+                },
+                order: [
+                    ['nextReviewDate', 'ASC']
+                ]
+            });
+            res.render('dailyReview', { words });
+        } catch (error) {
+            res.status(500).send('Error occurred: ' + error.message);
+        }
+    }
 }
 
 module.exports = WordController;
