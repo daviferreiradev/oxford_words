@@ -1,0 +1,25 @@
+<h2>Random Words</h2>
+
+<form action="/words" method="get">
+    <label for="level">Choose a level:</label>
+    <select name="level" id="level">
+        <option value="A1">A1</option>
+        <option value="A2">A2</option>
+        <option value="B1">B1</option>
+        <option value="B2">B2</option>
+        <option value="C1">C1</option>
+    </select>
+    <button type="submit">Get Word</button>
+</form>
+
+<p>{{word.word}}</p>
+
+<form action="/word/knew" method="POST">
+    <input type="hidden" name="wordId" value="{{word.id}}" />
+    <button type="submit">I knew</button>
+</form>
+
+<form action="/word/didnt-know" method="POST">
+    <input type="hidden" name="wordId" value="{{word.id}}" />
+    <button type="submit">I didn't know</button>
+</form>

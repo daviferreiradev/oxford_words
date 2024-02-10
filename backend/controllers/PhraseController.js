@@ -1,85 +1,84 @@
 const Sequelize = require('sequelize');
 
-const Word = require('../models/Word');
+const Phrase = require('../models/Phrase');
 
-class WordController {
-    static async getRandomWord(req, res) {
+class PhraseController {
+    static async getRandomPhrase(req, res) {
         try {
-            const word = await Word.findOne({ 
+            const phrase = await Phrase.findOne({ 
                 where: { 
                     stage: 'new' 
                 },
                 order: Sequelize.literal('rand()') 
             });
             
-            res.render('randomWord', { word: word.dataValues });
+            res.render('randomPhrase', { phrase: phrase.dataValues });
         } catch (error) {
             res.status(500).send('Error occurred: ' + error.message);
         }
     };
 
-    static async handleKnewWord(req, res) {
-        const { wordId } = req.body;
+    static async handleKnewPhrase(req, res) {
+        const { phraseId } = req.body;
         try {
-            const word = await Word.findByPk(wordId);
+            const phrase = await Phrase.findByPk(phraseId);
 
             let nextReview = new Date();
-            switch (word.stage) {
+            switch (phrase.stage) {
                 case 'new':
                     nextReview.setDate(nextReview.getDate() + 1);
-                    word.stage = '1 day';
+                    phrase.stage = '1 day';
                     break;
                 case '1 day':
                     nextReview.setDate(nextReview.getDate() + 3);
-                    word.stage = '3 days';
+                    phrase.stage = '3 days';
                     break;
                 case '3 days':
                     nextReview.setDate(nextReview.getDate() + 7);
-                    word.stage = '1 week';
+                    phrase.stage = '1 week';
                     break;
                 case '1 week':
                     nextReview.setDate(nextReview.getDate() + 15);
-                    word.stage = '15 days';
+                    phrase.stage = '15 days';
                     break;
                 case '15 days':
                     nextReview.setDate(nextReview.getDate() + 30);
-                    word.stage = '1 month';
+                    phrase.stage = '1 month';
                     break;
                 case '1 month':
-                    word.stage = 'learned';
+                    phrase.stage = 'learned';
                     break;
                 default:
                     break;
             }
-            word.nextReviewDate = nextReview;
-            await word.save();
+            phrase.nextReviewDate = nextReview;
+            await phrase.save();
             res.redirect('/');
         } catch (error) {
             res.status(500).send('Error occurred: ' + error.message);
         }
     };
 
-    static async handleDidntKnowWord(req, res) {
-        const { wordId } = req.body;
+    static async handleDidntKnowPhrase(req, res) {
+        const { phraseId } = req.body;
         try {
-            const word = await Word.findByPk(wordId);
+            const phrase = await Phrase.findByPk(phraseId);
 
-            word.stage = 'new';
-            await word.save();
+            phrase.stage = 'new';
+            await phrase.save();
             res.redirect('/');
         } catch (error) {
             res.status(500).send('Error occurred: ' + error.message);
         }
     };
 
-    // Show all words that need to be reviewed today
     static async getDailyReview(req, res) {
         try {
             const today = new Date();
             const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
             const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
-            const words = await Word.findAll({
+            const phrases = await Phrase.findAll({
                 where: {
                     nextReviewDate: {
                         [Sequelize.Op.gte]: startOfDay,
@@ -90,11 +89,12 @@ class WordController {
                     ['nextReviewDate', 'ASC']
                 ]
             });
-            res.render('dailyReview', { words });
+            
+            res.render('dailyReview', { phrases });
         } catch (error) {
             res.status(500).send('Error occurred: ' + error.message);
         }
     }
 }
 
-module.exports = WordController;
+module.exports = PhraseController;

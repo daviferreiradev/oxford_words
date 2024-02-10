@@ -1,0 +1,12 @@
+<h2>Random Phrases</h2>
+<p>{{phrase.phrase}}</p>
+
+<form action="/phrase/knew" method="POST">
+    <input type="hidden" name="phraseId" value="{{phrase.id}}" />
+    <button type="submit">I knew</button>
+</form>
+
+<form action="/phrase/didnt-know" method="POST">
+    <input type="hidden" name="phraseId" value="{{phrase.id}}" />
+    <button type="submit">I didn't know</button>
+</form>
